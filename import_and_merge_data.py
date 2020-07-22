@@ -25,7 +25,7 @@ def main():
     buffer: List[pd.DataFrame] = []
     for filename in TARGET_FOLDER.iterdir():
         if filename.suffix == ".xlsx":
-            df = pd.read_excel(str(filename))
+            df = pd.read_excel(str(filename), thousands=',')
             if "申請人" not in df.columns:
                 print(f"申請人 missing in week {filename.stem}")
                 # missing data
@@ -41,6 +41,8 @@ def main():
             buffer.append(df)
     df_final = pd.concat(buffer).sort_values("week")
     df_final = df_final[~df_final.name.isnull()]
+    for col in ("theaters", "tickets", "revenue", "total_tickets", "total_revenue"):
+        df_final[col] = df_final[col].astype("int")
     df_final.to_csv(OUTPUT_FOLDER / "box_office.csv", index=False)
 
 
