@@ -43,6 +43,8 @@ def main():
     df_final = df_final[~df_final.name.isnull()]
     for col in ("theaters", "tickets", "revenue", "total_tickets", "total_revenue"):
         df_final[col] = df_final[col].astype("int")
+    # Normalize the release date
+    df["release_date"] = pd.to_datetime(df["release_date"])
     df_final.to_csv(OUTPUT_FOLDER / "box_office.csv", index=False)
 
 
