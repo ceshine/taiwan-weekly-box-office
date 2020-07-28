@@ -44,7 +44,13 @@ def main():
     for col in ("theaters", "tickets", "revenue", "total_tickets", "total_revenue"):
         df_final[col] = df_final[col].astype("int")
     # Normalize the release date
-    df["release_date"] = df["release_date"].apply(lambda x: x.split(" ")[0].replace("-", "/"))
+    df_final["release_date"] = df_final["release_date"].apply(lambda x: str(x).split(" ")[0].replace("-", "/"))
+    print(
+        "# of moveis with only year of release:",
+        df_final[df_final.release_date.str.len() == 4].shape[0]
+    )
+    tmp = df_final.loc[df_final.release_date.str.len() == 4, "release_date"]
+    tmp = tmp + "-01-01"
     df_final.to_csv(OUTPUT_FOLDER / "box_office.csv", index=False)
 
 
