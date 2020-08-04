@@ -13,9 +13,9 @@ def create_tables(conn: sqlite3.Connection):
     cur = conn.cursor()
     cur.execute('''CREATE TABLE movies
         (
-            id CHAR(40) PRIMARY KEY, 
+            id CHAR(40) PRIMARY KEY,
             name VARCHAR(256),
-            release_date DATE, 
+            release_date DATE,
             country VARCHAR(20),
             publisher VARCHAR(128),
             agent VARCHAR(128)
@@ -24,8 +24,9 @@ def create_tables(conn: sqlite3.Connection):
     cur.execute('''CREATE TABLE weekly_box_office
         (
             id CHAR(40) PRIMARY KEY,
-            movie_id VARCHAR(40), 
-            date DATE, 
+            movie_id VARCHAR(40),
+            date DATE,
+            theaters INTEGER,
             revenue INTEGER,
             tickets INTEGER,
             total_revenue INTEGER,
@@ -77,6 +78,7 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
             sha1_hex(row["name"] + row["release_date"] + row["agent"] + row["week"]),
             sha1_hex(row["name"] + row["release_date"] + row["agent"]),
             row["week"],
+            row["theaters"],
             row["revenue"],
             row["tickets"],
             row["total_revenue"],
@@ -84,7 +86,7 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
         ))
     cur = conn.cursor()
     cur.executemany(
-        'INSERT INTO weekly_box_office VALUES (?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO weekly_box_office VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         buffer
     )
     conn.commit()
