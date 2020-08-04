@@ -45,12 +45,12 @@ def write_movies(df: pd.DataFrame, conn: sqlite3.Connection):
     df_movies = df[
         ~df.country.isnull()  # only one entry
     ][["country", "name", "release_date", "publisher", "agent"]].drop_duplicates(
-        ["name", "release_date", "agent"], keep="last"
+        ["name", "agent"], keep="last"
     )
     buffer = []
     seen: Dict[str, Any] = {}
     for _, row in df_movies.iterrows():
-        key = sha1_hex(row["name"] + row["release_date"] + row["agent"])
+        key = sha1_hex(row["name"] + row["agent"])
         if key in seen:
             print(seen[key], row)
         seen[key] = row
@@ -75,8 +75,8 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
     buffer = []
     for _, row in df.iterrows():
         buffer.append((
-            sha1_hex(row["name"] + row["release_date"] + row["agent"] + row["week"]),
-            sha1_hex(row["name"] + row["release_date"] + row["agent"]),
+            sha1_hex(row["name"] + row["agent"] + row["week"]),
+            sha1_hex(row["name"] + row["agent"]),
             row["week"],
             row["theaters"],
             row["revenue"],
