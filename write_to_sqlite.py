@@ -2,6 +2,7 @@ import sqlite3
 from pathlib import Path
 from hashlib import sha1
 from typing import Dict, Any
+from datetime import timedelta
 
 import pandas as pd
 
@@ -45,12 +46,12 @@ def write_movies(df: pd.DataFrame, conn: sqlite3.Connection):
     df_movies = df[
         ~df.country.isnull()  # only one entry
     ][["country", "name", "release_date", "publisher", "agent"]].drop_duplicates(
-        ["name", "agent"], keep="last"
+        ["name", "publisher"], keep="last"
     )
     buffer = []
     seen: Dict[str, Any] = {}
     for _, row in df_movies.iterrows():
-        key = sha1_hex(row["name"] + row["agent"])
+        key = sha1_hex(row["name"] + row["publisher"])
         if key in seen:
             print(seen[key], row)
         seen[key] = row
@@ -75,9 +76,9 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
     buffer = []
     for _, row in df.iterrows():
         buffer.append((
-            sha1_hex(row["name"] + row["agent"] + row["week"]),
-            sha1_hex(row["name"] + row["agent"]),
-            row["week"],
+            sha1_hex(row["name"] + row["publisher"] + row["week"].strftime("%Y/%m/%d")),
+            sha1_hex(row["name"] + row["publisher"]),
+            row["week"].strftime("%Y/%m/%d"),
             row["theaters"],
             row["revenue"],
             row["tickets"],
@@ -93,8 +94,40 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
     return len(buffer)
 
 
+def recover_opening_week_data(df):
+    """The opening week data can be recovered for movies that were released after Nov. 2017"""
+    df_tmp = df[df.release_date >= "2017-11-01"].sort_values(
+        "week").groupby(["name", "publisher"], as_index=False).first()
+    # No movie was released on Monday
+    assert df_tmp[df_tmp.week == df_tmp.release_date].shape[0] == 0
+    tmp = []
+    for _, row in df_tmp.iterrows():
+        row = row.copy()
+        row["total_revenue"] = row["total_revenue"] - row["revenue"]
+        row["total_tickets"] = row["total_tickets"] - row["tickets"]
+        row["revenue"] = row["total_revenue"]
+        row["tickets"] = row["total_tickets"]
+        assert (row["revenue"] >= 0) and (row["tickets"] >= 0)
+        row["week"] = row["week"] - timedelta(days=7)
+        tmp.append(row)
+    df_recovered = pd.DataFrame(tmp)
+    df_recovered.head(3)
+    df = pd.concat(
+        [df, df_recovered], axis=0, ignore_index=True
+    ).sort_values(["week", "revenue"], ascending=[True, False]).reset_index(drop=True)
+    print("Problematic entries:")
+    cnt = df.groupby(["name", "publisher", "week"])["week"].count()
+    print(cnt[cnt > 1])
+    # throw away a random row for now
+    print(df.shape[0])
+    df = df.drop_duplicates(["name", "publisher", "week"])
+    print(df.shape[0])
+    return df
+
+
 def main():
-    df = pd.read_csv(SOURCE_DATA)
+    df = pd.read_csv(SOURCE_DATA, parse_dates=["week"])
+    df = recover_opening_week_data(df)
     df["agent"].fillna("", inplace=True)
     if TARGET_FILE.exists():
         TARGET_FILE.rename("cache/db.bak")
