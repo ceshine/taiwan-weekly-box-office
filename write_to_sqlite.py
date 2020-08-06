@@ -76,9 +76,9 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
     buffer = []
     for _, row in df.iterrows():
         buffer.append((
-            sha1_hex(row["name"] + row["publisher"] + row["week"].strftime("%Y/%m/%d")),
+            sha1_hex(row["name"] + row["publisher"] + row["week"].strftime("%Y-%m-%d")),
             sha1_hex(row["name"] + row["publisher"]),
-            row["week"].strftime("%Y/%m/%d"),
+            row["week"].strftime("%Y-%m-%d"),
             row["theaters"],
             row["revenue"],
             row["tickets"],
