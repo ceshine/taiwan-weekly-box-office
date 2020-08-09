@@ -14,7 +14,7 @@ def create_tables(conn: sqlite3.Connection):
     cur = conn.cursor()
     cur.execute('''CREATE TABLE movies
         (
-            id CHAR(40) PRIMARY KEY,
+            id CHAR(6) PRIMARY KEY,
             name VARCHAR(256),
             release_date DATE,
             country VARCHAR(20),
@@ -24,8 +24,8 @@ def create_tables(conn: sqlite3.Connection):
     ''')
     cur.execute('''CREATE TABLE weekly_box_office
         (
-            id CHAR(40) PRIMARY KEY,
-            movie_id VARCHAR(40),
+            id CHAR(6) PRIMARY KEY,
+            movie_id VARCHAR(12),
             date DATE,
             theaters INTEGER,
             revenue INTEGER,
@@ -38,8 +38,8 @@ def create_tables(conn: sqlite3.Connection):
     conn.commit()
 
 
-def sha1_hex(target: str):
-    return sha1(target.encode("utf8")).hexdigest()
+def sha1_hex(target: str, truncate: int = 6):
+    return sha1(target.encode("utf8")).hexdigest()[:truncate]
 
 
 def write_movies(df: pd.DataFrame, conn: sqlite3.Connection):
@@ -76,7 +76,7 @@ def write_box_office(df: pd.DataFrame, conn: sqlite3.Connection):
     buffer = []
     for _, row in df.iterrows():
         buffer.append((
-            sha1_hex(row["name"] + row["publisher"] + row["week"].strftime("%Y-%m-%d")),
+            sha1_hex(row["name"] + row["publisher"] + row["week"].strftime("%Y-%m-%d"), truncate=12),
             sha1_hex(row["name"] + row["publisher"]),
             row["week"].strftime("%Y-%m-%d"),
             row["theaters"],
