@@ -127,6 +127,8 @@ def recover_opening_week_data(df):
 
 def main():
     df = pd.read_csv(SOURCE_DATA, parse_dates=["week"])
+    df["name"] = df.name.str.replace(
+        " ", "").str.replace(":", "：").str.replace("!", "！")
     df = recover_opening_week_data(df)
     df["agent"].fillna("", inplace=True)
     if TARGET_FILE.exists():
