@@ -1,0 +1,6 @@
+conda activate scrapping
+python download_data.py --start-date $argv; or exit $status
+python import_and_merge_data.py; or exit $status
+python write_to_sqlite.py; or exit $status
+great_expectations checkpoint run movies.chk; or exit $status
+cp output/movies.sqlite ../movies_nextjs/
