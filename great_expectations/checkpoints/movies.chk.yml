@@ -20,3 +20,10 @@ batches:
       datasource: my_database
     expectation_suite_names: # one or more suites may validate against a single batch
       - movies
+  - batch_kwargs:
+      table: weekly_box_office
+      schema: main
+      data_asset_name: main.weekly_box_office
+      datasource: my_database
+    expectation_suite_names: # one or more suites may validate against a single batch
+      - box_office
