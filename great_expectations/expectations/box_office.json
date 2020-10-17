@@ -1,0 +1,193 @@
+{
+  "data_asset_type": "Dataset",
+  "expectation_suite_name": "box_office",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 17000
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_table_column_count_to_equal",
+      "kwargs": {
+        "value": 8
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_ordered_list",
+      "kwargs": {
+        "column_list": [
+          "id",
+          "movie_id",
+          "date",
+          "theaters",
+          "revenue",
+          "tickets",
+          "total_revenue",
+          "total_tickets"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "date"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "date",
+        "min_value": "2017-10-01",
+        "parse_strings_as_datetimes": true
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "theaters"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "theaters",
+        "max_value": 105,
+        "min_value": 1
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "revenue"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "revenue",
+        "max_value": 500000000.0,
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "tickets"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "tickets",
+        "max_value": 2000000.0,
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "total_revenue"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "total_revenue",
+        "max_value": 1000000000.0,
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "total_tickets"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "total_tickets",
+        "max_value": 5000000.0,
+        "min_value": 0
+      },
+      "meta": {}
+    }
+  ],
+  "meta": {
+    "BasicSuiteBuilderProfiler": {
+      "batch_kwargs": {
+        "data_asset_name": "main.weekly_box_office",
+        "datasource": "my_database",
+        "schema": "main",
+        "table": "weekly_box_office"
+      },
+      "created_at": 1602920687.8967738,
+      "created_by": "BasicSuiteBuilderProfiler"
+    },
+    "citations": [
+      {
+        "batch_kwargs": {
+          "data_asset_name": "main.weekly_box_office",
+          "datasource": "my_database",
+          "schema": "main",
+          "table": "weekly_box_office"
+        },
+        "batch_markers": {
+          "ge_load_time": "20201017T074447.633572Z"
+        },
+        "batch_parameters": null,
+        "citation_date": "20201017T074448.008772Z",
+        "comment": "BasicSuiteBuilderProfiler added a citation based on the current batch."
+      }
+    ],
+    "columns": {
+      "date": {
+        "description": ""
+      },
+      "id": {
+        "description": ""
+      },
+      "movie_id": {
+        "description": ""
+      },
+      "revenue": {
+        "description": ""
+      },
+      "theaters": {
+        "description": ""
+      },
+      "tickets": {
+        "description": ""
+      },
+      "total_revenue": {
+        "description": ""
+      },
+      "total_tickets": {
+        "description": ""
+      }
+    },
+    "great_expectations_version": "0.12.3",
+    "notes": {
+      "content": [
+        "_To add additional notes, edit the <code>meta.notes.content</code> field in the appropriate Expectation json file._"
+      ],
+      "format": "markdown"
+    }
+  }
+}
